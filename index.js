@@ -39,14 +39,13 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.post('/api/persons', (request, response, next) => {
-  const {name, number} = request.body
+  const { name, number } = request.body
 
-  const person = new Person({ name,number })
+  const person = new Person({ name, number })
 
   person.save().then(savedNote => {
     response.json(savedNote)
   }).catch(error => next(error))
-  
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -57,10 +56,10 @@ app.get('/api/persons/:id', (request, response, next) => {
       response.status(404).end()
     }
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
     .then(result => {
       response.status(204).end()
@@ -70,7 +69,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
-  
+
   Person.findByIdAndUpdate(request.params.id, { name, number }, { new: true, runValidators: true, context: 'query' })
     .then(updatedNote => {
       response.json(updatedNote)
@@ -78,12 +77,12 @@ app.put('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.get('/api/info', (request, response) => {
+app.get('/api/info', (request, response, next) => {
   Person.countDocuments({}).then(count => {
     const currentDate = new Date()
     return response.send(`<p>Phonebook has info for ${count} people</p><p>${currentDate}}</p>`)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.use(unknownEndpoint)
